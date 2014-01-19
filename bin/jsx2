@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+var transform = require('../lib').transform;
+
+var argv = require('optimist')
+    .usage('Transforms a jsx2 template file into a javascript mixin')
+    .demand('o')
+    .describe('o', 'output file')
+    .boolean('v')
+    .describe('v', 'verbose')
+    .argv;
+
+var input = argv._[0];
+var output = argv.o;
+
+if (argv.v) {
+  console.log("jsx2 : " + input + " --> " + output);
+}
+
+var data = fs.readFileSync(input).toString();
+var result = transform(data);
+
+fs.writeFileSync(output, result);
