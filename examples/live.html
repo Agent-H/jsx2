@@ -1,0 +1,102 @@
+  <html>
+  <head>
+    <title>React templates test</title>
+
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/vendor/codemirror.css">
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-half">
+          <h2>Template:</h2>
+          <div class="box">
+            <textarea id="template">
+<% name template %>
+<div>
+  <h3>Todo</h3>
+  <ul className="list">
+    <% for task in ctx.state.tasks %>
+      <li className="list-item" key={task}>
+        <a href="#" onClick={ctx.onRemoveTask(task)} className="list-action" >x</a>
+        { task }
+      </li>
+    <% end for %>
+  </ul>
+  <input type="text" ref="itemName" value={ctx.state.newTask} onChange={ctx.onInputChange} onKeyDown={this.onInputKeyDown} />
+  <a className="btn" href="#" onClick={ctx.onAddTask}>add</a>
+</div>
+            </textarea>
+          </div>
+        </div>
+        <div class="col-half">
+          <h2>Component:</h2>
+          <div class="box">
+            <textarea id="js">
+var View = React.createClass({
+  mixins: [template],
+  getInitialState: function() {
+    return {
+      tasks: ["Play with JSX2", "use JSX2 in awesome projects", "rule the world"],
+      newTask: 'new task'
+    };
+  },
+  onAddTask: function(evt) {
+    evt.preventDefault();
+    var newTodo = this.state.newTask;
+    this.setState({
+      tasks: this.state.tasks.concat([newTodo]),
+      newTask: ''
+    });
+  },
+  onInputChange: function(event) {
+    this.setState({
+      newTask: event.target.value
+    });
+  },
+  onInputKeyDown: function(event) {
+    if (event.which === 13) {
+      this.onAddTask(event);
+    }
+  },
+  onRemoveTask: function(task) {
+    var ctx = this;
+    return function(evt) {
+      evt.preventDefault();
+      ctx.setState({
+        tasks: ctx.state.tasks.filter(function(t){
+          return t !== task
+        })
+      });
+    }
+  }
+});
+
+return View;
+            </textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-half">
+          <div class="controls">
+            <h1>JSX2 live editor</h1>
+            <p>Edit the template above and the javascript component's code on the left
+              click run to see the result.</p>
+            <a href="#" class="btn" id="run" onClick="render(); return false;">&raquo; Run</a>
+            <div id="log"></div>
+          </div>
+        </div>
+        <div class="col-half">
+          <h2>Result:</h2>
+          <div id="result" class="box"></div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="assets/vendor/react-0.8.0.js"></script>
+    <script type="text/javascript" src="assets/vendor/codemirror.js"></script>
+    <script type="text/javascript" src="../build/jsx2-0.0.0.js"></script>
+    <script type="text/javascript" src="assets/live.js"></script>
+  </body>
+</html>
